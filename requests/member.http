@@ -1,0 +1,11 @@
+@host = localhost
+@port = 8888
+@baseUrl = http://{{host}}:{{port}}
+@apiUrl = {{baseUrl}}/api/v1
+### Health check
+GET {{baseUrl}}/ping
+Accept: application/json
+
+#### Get All Members
+GET {{apiUrl}}/member
+Accept: application/json

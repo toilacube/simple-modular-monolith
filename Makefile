@@ -1,0 +1,45 @@
+ENV ?= local
+
+ifneq (,$(wildcard ./.env.$(ENV)))
+    include .env.$(ENV)
+else
+    $(warning Environment file .env.$(ENV) not found. Some targets may fail.)
+endif
+
+GORUN := go run
+GOBUILD := go build
+BINARY_NAME := coolmate
+
+DB_SOURCE := mysql://$(strip $(DB_USER)):$(strip $(DB_PASSWORD))@tcp($(strip $(DB_HOST)):$(strip $(DB_PORT)))/$(strip $(DB_NAME))?charset=utf8mb4&parseTime=True&loc=Local
+
+format:
+	@echo "Formatting code"
+	@go fmt ./...
+	@go vet ./...
+	@echo "Formatted"
+
+all: build
+
+build: format
+	@go build
+
+run-member: format
+	@go run ./cmd/member_server/main.go
+
+start-db:
+	@echo "Starting database..."
+	@docker compose -f compose.db.yml up -d	
+
+# example: make migrate-create name=add_users_table
+migrate-create:
+	@if [ -z "$(name)" ]; then \
+		echo "Error: Migration name is required. Usage: make migrate-create name=<migration_name>"; \
+		exit 1; \
+	fi
+	@echo "Creating migration file: $(name)"
+	@migrate create -ext sql -dir migrations -seq $(name)
+
+migrate-up:
+	@echo "Applying migrations for ENV='$(ENV)'..."
+	@echo "Using DB: mysql://$(DB_USER):******@tcp($(DB_HOST):$(DB_PORT))/$(DB_NAME)"
+	@migrate -database "$(DB_SOURCE)" -path migrations up
