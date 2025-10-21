@@ -29,12 +29,6 @@ func main() {
 	{
 		memberGroup := v1.Group("/member")
 		{
-			memberGroup.GET("", func(c *gin.Context) {
-				c.JSON(200, gin.H{
-					"message": "Get all members",
-				})
-			})
-
 			member.AuthRoutes(memberGroup, app.MemberContainer)
 
 		} // Logger test endpoints group

@@ -3,9 +3,11 @@ package app
 import (
 	"os"
 	"tutorial/internal/member"
+	"tutorial/internal/movies"
 	"tutorial/pkg/config"
 	"tutorial/pkg/database"
 	"tutorial/pkg/logger"
+	"tutorial/pkg/utils"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +16,7 @@ type AppContainer struct {
 	Config          *config.Config
 	DB              *gorm.DB
 	MemberContainer *member.MemberContainer
+	MoviesContainer *movies.MoviesContainer
 }
 
 func NewAppContainer() (app *AppContainer, err error) {
@@ -60,11 +63,17 @@ func NewAppContainer() (app *AppContainer, err error) {
 	logger.Debug("This is a debug message")
 
 	memberContainer := member.NewMemberContainer(db)
+	moviesContainer := movies.NewMoviesContainer(db)
+
+	if err := utils.InitializeJWT(); err != nil {
+		return nil, err
+	}
 
 	app = &AppContainer{
 		Config:          cfg,
 		DB:              db,
 		MemberContainer: memberContainer,
+		MoviesContainer: moviesContainer,
 	}
 
 	return app, nil

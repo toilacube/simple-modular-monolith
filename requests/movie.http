@@ -1,0 +1,27 @@
+@host = localhost
+@port = 8889
+@baseUrl = http://{{host}}:{{port}}
+@apiUrl = {{baseUrl}}/api/v1
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjEwNDc4MzYsImlhdCI6MTc2MTA0NDIzNiwibWVtYmVyX2lkIjoiZDUyNWI2ZjMtMjJiNS00ZmI3LTlkNzctNThiNzYwNWM2OTkzIn0.dnKJMKPSbOo6Yd6jEguKnnhinqfnEH_V0K28qZhrxbU
+
+### Health check
+GET {{baseUrl}}/ping
+Accept: application/json
+
+#### Get All Movies
+GET {{apiUrl}}/movies
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+#### Create a Movie
+POST {{apiUrl}}/movies
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"name": "Inception",
+	"star": 5,
+	"actor": "Leonardo DiCaprio"
+}

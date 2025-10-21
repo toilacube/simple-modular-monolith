@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/hex"
 	"fmt"
 	"time"
 	"tutorial/pkg/config"
@@ -24,20 +25,60 @@ func GetUUID() string {
 	return uuid.New().String()
 }
 
-func GenerateJWTToken(userID string) (string, error) {
+var decodedSecretKey []byte
+
+func InitializeJWT() error {
+	cfg := config.GetConfig()
+	if cfg == nil {
+		return fmt.Errorf("config not loaded")
+	}
+
+	secretKeyHex := cfg.JWT.SecretKey
+	var err error
+	decodedSecretKey, err = hex.DecodeString(secretKeyHex)
+	if err != nil {
+		return fmt.Errorf("invalid JWT secret key format: %w", err)
+	}
+
+	if len(decodedSecretKey) < 32 {
+		return fmt.Errorf("JWT secret key must be at least 256 bits (32 bytes)")
+	}
+
+	return nil
+}
+
+func GenerateJWTToken(memberID string) (string, error) {
 	cfg := config.GetConfig()
 	if cfg == nil {
 		return "", fmt.Errorf("config not loaded")
 	}
 
-	secretKey := cfg.JWT.SecretKey
-
 	claims := jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(time.Minute * time.Duration(cfg.JWT.ExpirationMinutes)).Unix(),
-		"iat":     time.Now().Unix(), // Issued at
+		"member_id": memberID,
+		"exp":       time.Now().Add(time.Minute * time.Duration(cfg.JWT.ExpirationMinutes)).Unix(),
+		"iat":       time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(secretKey))
+	return token.SignedString(decodedSecretKey)
+}
+
+func ParseToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if token.Method != jwt.SigningMethodHS256 {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return decodedSecretKey, nil
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("token parsing failed: %w", err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, fmt.Errorf("invalid token claims or signature")
+	}
+
+	return claims, nil
 }

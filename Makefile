@@ -27,6 +27,19 @@ run-member: format
 	fi
 	@go run ./cmd/member_server/main.go
 
+run-movie: format
+	@if [ -z "$(ENV)" ]; then \
+		echo "ENV variable not set. Defaulting to 'local'"; \
+		export ENV=local; \
+	fi
+	@if [ -z "$(CONFIG_TYPE)" ]; then \
+		echo "CONFIG_TYPE variable not set. Defaulting to 'env'"; \
+		export CONFIG_TYPE=env; \
+	fi
+	@go run ./cmd/movie_server/main.go
+
+
+
 start-db:
 	@echo "Starting database..."
 	@docker compose -f compose.db.yml up -d	

@@ -16,8 +16,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "test",
-  "password": "test"
+  "username": "admin",
+  "password": "admin"
 }
 
 ### Login User
@@ -26,6 +26,6 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "test",
-  "password": "test"
+  "username": "admin",
+  "password": "admin"
 }
