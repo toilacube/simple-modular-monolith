@@ -2,65 +2,113 @@ package config
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	MemberServerPort string `mapstructure:"MEMBER_SERVER_PORT"`
-	MovieServerPort  string `mapstructure:"MOVIE_SERVER_PORT"`
-	DBHost           string `mapstructure:"DB_HOST"`
-	DBPort           string `mapstructure:"DB_PORT"`
-	DBUser           string `mapstructure:"DB_USER"`
-	DBPassword       string `mapstructure:"DB_PASSWORD"`
-	DBName           string `mapstructure:"DB_NAME"`
-	DBDriver         string `mapstructure:"DB_DRIVER"`
+	Server struct {
+		MemberPort string `mapstructure:"member_port"`
+		MoviePort  string `mapstructure:"movie_port"`
+	} `mapstructure:"server"`
+
+	Database struct {
+		Host     string `mapstructure:"host"`
+		Port     string `mapstructure:"port"`
+		User     string `mapstructure:"user"`
+		Password string `mapstructure:"password"`
+		Name     string `mapstructure:"name"`
+		Driver   string `mapstructure:"driver"`
+	} `mapstructure:"database"`
 }
 
 type ConfigOptions struct {
-	ConfigEnv  string // environment,  for example local, dev, prod
-	ConfigType string // env or  yaml
+	ConfigEnv  string // environment, for example local, dev, prod
+	ConfigType string // "env", "yaml", or empty (tries both)
 }
 
 func LoadConfig(cfgOpts ConfigOptions) (*Config, error) {
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
+	v := viper.New()
 
-	if cfgOpts.ConfigType == "env" {
-		viper.SetConfigName(fmt.Sprintf(".env.%s", cfgOpts.ConfigEnv))
-		viper.SetConfigType("env")
-		if err := viper.ReadInConfig(); err != nil {
-			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-				// fallback to .env.local if file not found
-				viper.SetConfigName(".env.local")
-				if err := viper.ReadInConfig(); err != nil {
-					return nil, err
-				}
-			} else {
-				return nil, err
-			}
-		}
-	}
-	if cfgOpts.ConfigType == "yaml" {
-		viper.SetConfigName(fmt.Sprintf("config.%s", cfgOpts.ConfigEnv))
-		viper.SetConfigType("yaml")
-		if err := viper.ReadInConfig(); err != nil {
-			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-				// fallback to config.local.yaml if file not found
-				viper.SetConfigName("config.local")
-				if err := viper.ReadInConfig(); err != nil {
-					return nil, err
-				}
-			} else {
-				return nil, err
-			}
-		}
+	setDefaultConfig(v)
+
+	v.AddConfigPath(".")
+	if err := tryLoadConfigFile(v, cfgOpts); err != nil {
+		log.Printf("⚠ No config file found: %v", err)
+		log.Println("⚠ Using defaults and environment variables only")
 	}
 
 	var cfg Config
-	if err := viper.Unmarshal(&cfg); err != nil {
-		return nil, err
+	if err := v.Unmarshal(&cfg); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
 	return &cfg, nil
+}
+
+func tryLoadConfigFile(v *viper.Viper, cfgOpts ConfigOptions) error {
+	switch cfgOpts.ConfigType {
+	case "env":
+		return tryLoadEnvFile(v, cfgOpts.ConfigEnv)
+	case "yaml":
+		return tryLoadYAMLFile(v, cfgOpts.ConfigEnv)
+	default:
+		if err := tryLoadEnvFile(v, cfgOpts.ConfigEnv); err == nil {
+			return nil
+		}
+		return tryLoadYAMLFile(v, cfgOpts.ConfigEnv)
+	}
+}
+
+func tryLoadEnvFile(v *viper.Viper, env string) error {
+	if env != "" {
+		v.SetConfigName(fmt.Sprintf(".env.%s", env))
+		v.SetConfigType("env")
+		if err := v.ReadInConfig(); err == nil {
+			log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
+			return nil
+		}
+	}
+
+	// fallback to default .env.local
+	v.SetConfigName(".env.local")
+	v.SetConfigType("env")
+	if err := v.ReadInConfig(); err != nil {
+		return fmt.Errorf("no .env file found")
+	}
+	log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
+	return nil
+}
+
+func tryLoadYAMLFile(v *viper.Viper, env string) error {
+	if env != "" {
+		v.SetConfigName(fmt.Sprintf("config.%s", env))
+		v.SetConfigType("yaml")
+		if err := v.ReadInConfig(); err == nil {
+			log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
+			return nil
+		}
+	}
+
+	// fallback to default config.local.yaml
+	v.SetConfigName("config.local")
+	v.SetConfigType("yaml")
+	if err := v.ReadInConfig(); err != nil {
+		return fmt.Errorf("no yaml file found")
+	}
+	log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
+	return nil
+}
+
+func setDefaultConfig(v *viper.Viper) {
+	v.SetDefault("server.member_port", "6363")
+	v.SetDefault("server.movie_port", "8889")
+
+	v.SetDefault("database.host", "localhost")
+	v.SetDefault("database.port", "3308")
+	v.SetDefault("database.user", "root")
+	v.SetDefault("database.password", "password")
+	v.SetDefault("database.name", "tutorial_db")
+	v.SetDefault("database.driver", "mysql")
 }

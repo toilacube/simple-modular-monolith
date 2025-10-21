@@ -30,7 +30,7 @@ func main() {
 		})
 	}
 
-	addr := ":" + app.Config.MemberServerPort
+	addr := ":" + app.Config.Server.MemberPort
 
 	r.Run(addr)
 }
