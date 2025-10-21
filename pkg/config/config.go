@@ -25,11 +25,24 @@ type Config struct {
 		Level  string `mapstructure:"level"`
 		Format string `mapstructure:"format"`
 	} `mapstructure:"logger"`
+
+	JWT struct {
+		SecretKey         string `mapstructure:"secret_key"`
+		ExpirationMinutes int    `mapstructure:"expiration_minutes"`
+	} `mapstructure:"jwt"`
 }
 
 type ConfigOptions struct {
 	ConfigEnv  string // environment, for example local, dev, prod
 	ConfigType string // "env", "yaml", or empty (tries both)
+}
+
+var (
+	globalConfig *Config
+)
+
+func GetConfig() *Config {
+	return globalConfig
 }
 
 func LoadConfig(cfgOpts ConfigOptions) (*Config, error) {
@@ -41,12 +54,11 @@ func LoadConfig(cfgOpts ConfigOptions) (*Config, error) {
 	if err := tryLoadConfigFile(v, cfgOpts); err != nil {
 	}
 
-	var cfg Config
-	if err := v.Unmarshal(&cfg); err != nil {
+	if err := v.Unmarshal(&globalConfig); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
-	return &cfg, nil
+	return globalConfig, nil
 }
 
 func tryLoadConfigFile(v *viper.Viper, cfgOpts ConfigOptions) error {

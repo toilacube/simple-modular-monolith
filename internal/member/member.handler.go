@@ -34,7 +34,13 @@ func (h *MemberHandler) Login(c *gin.Context) {
 		return
 	}
 
+	token, err := h.service.Login(loginDTO)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(200, gin.H{
-		"message": "User logged in successfully",
+		"token": token,
 	})
 }
