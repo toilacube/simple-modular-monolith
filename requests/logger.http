@@ -1,0 +1,26 @@
+@host = localhost
+@port = 6363
+@baseUrl = http://{{host}}:{{port}}
+@apiUrl = {{baseUrl}}/api/v1
+
+### Logger GET endpoint
+GET {{apiUrl}}/logger/get
+Accept: application/json
+
+### Logger POST endpoint
+POST {{apiUrl}}/logger/post
+Accept: application/json
+Content-Type: application/json
+
+{
+  "test": "data",
+  "message": "Testing POST logger endpoint"
+}
+
+### Logger SLOW endpoint (1200ms delay)
+GET {{apiUrl}}/logger/slow
+Accept: application/json
+
+### Logger ERROR endpoint (returns 500)
+GET {{apiUrl}}/logger/error
+Accept: application/json

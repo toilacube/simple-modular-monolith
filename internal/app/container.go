@@ -4,6 +4,7 @@ import (
 	"os"
 	"tutorial/pkg/config"
 	"tutorial/pkg/database"
+	"tutorial/pkg/logger"
 
 	"gorm.io/gorm"
 )
@@ -45,6 +46,16 @@ func NewAppContainer() (app *AppContainer, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	logger.LoadLogger(cfg)
+
+	logger := logger.GetLogger()
+
+	// test logger
+	logger.Info("This is an info message")
+	logger.Warn("This is a warning message")
+	logger.Error("This is an error message")
+	logger.Debug("This is a debug message")
 
 	app = &AppContainer{
 		Config: cfg,

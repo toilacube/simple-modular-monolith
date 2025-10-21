@@ -11,5 +11,5 @@ database:
   driver: mysql
 
 logger:
-  level: debug
+  level: info
   format: console

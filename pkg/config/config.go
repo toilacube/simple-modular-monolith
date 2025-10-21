@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/spf13/viper"
 )
@@ -21,6 +20,11 @@ type Config struct {
 		Name     string `mapstructure:"name"`
 		Driver   string `mapstructure:"driver"`
 	} `mapstructure:"database"`
+
+	Logger struct {
+		Level  string `mapstructure:"level"`
+		Format string `mapstructure:"format"`
+	} `mapstructure:"logger"`
 }
 
 type ConfigOptions struct {
@@ -35,8 +39,6 @@ func LoadConfig(cfgOpts ConfigOptions) (*Config, error) {
 
 	v.AddConfigPath(".")
 	if err := tryLoadConfigFile(v, cfgOpts); err != nil {
-		log.Printf("⚠ No config file found: %v", err)
-		log.Println("⚠ Using defaults and environment variables only")
 	}
 
 	var cfg Config
@@ -66,7 +68,6 @@ func tryLoadEnvFile(v *viper.Viper, env string) error {
 		v.SetConfigName(fmt.Sprintf(".env.%s", env))
 		v.SetConfigType("env")
 		if err := v.ReadInConfig(); err == nil {
-			log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
 			return nil
 		}
 	}
@@ -77,7 +78,6 @@ func tryLoadEnvFile(v *viper.Viper, env string) error {
 	if err := v.ReadInConfig(); err != nil {
 		return fmt.Errorf("no .env file found")
 	}
-	log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
 	return nil
 }
 
@@ -86,7 +86,6 @@ func tryLoadYAMLFile(v *viper.Viper, env string) error {
 		v.SetConfigName(fmt.Sprintf("config.%s", env))
 		v.SetConfigType("yaml")
 		if err := v.ReadInConfig(); err == nil {
-			log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
 			return nil
 		}
 	}
@@ -97,7 +96,6 @@ func tryLoadYAMLFile(v *viper.Viper, env string) error {
 	if err := v.ReadInConfig(); err != nil {
 		return fmt.Errorf("no yaml file found")
 	}
-	log.Printf("✓ Loaded config from: %s", v.ConfigFileUsed())
 	return nil
 }
 
@@ -111,4 +109,7 @@ func setDefaultConfig(v *viper.Viper) {
 	v.SetDefault("database.password", "password")
 	v.SetDefault("database.name", "tutorial_db")
 	v.SetDefault("database.driver", "mysql")
+
+	v.SetDefault("logger.level", "info")
+	v.SetDefault("logger.format", "console")
 }
