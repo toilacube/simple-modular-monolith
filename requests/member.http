@@ -9,3 +9,23 @@ Accept: application/json
 #### Get All Members
 GET {{apiUrl}}/member
 Accept: application/json
+
+### Register User
+POST {{apiUrl}}/member/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+### Login User
+POST {{apiUrl}}/member/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "password123"
+}

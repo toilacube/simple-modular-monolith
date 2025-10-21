@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 	"tutorial/internal/app"
+	"tutorial/internal/member"
 	"tutorial/internal/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -33,9 +34,10 @@ func main() {
 					"message": "Get all members",
 				})
 			})
-		}
 
-		// Logger test endpoints group
+			member.AuthRoutes(memberGroup, app.MemberContainer)
+
+		} // Logger test endpoints group
 		loggerGroup := v1.Group("/logger")
 		{
 			loggerGroup.GET("/get", func(c *gin.Context) {

@@ -2,6 +2,7 @@ package app
 
 import (
 	"os"
+	"tutorial/internal/member"
 	"tutorial/pkg/config"
 	"tutorial/pkg/database"
 	"tutorial/pkg/logger"
@@ -10,8 +11,9 @@ import (
 )
 
 type AppContainer struct {
-	Config *config.Config
-	DB     *gorm.DB
+	Config          *config.Config
+	DB              *gorm.DB
+	MemberContainer *member.MemberContainer
 }
 
 func NewAppContainer() (app *AppContainer, err error) {
@@ -57,9 +59,12 @@ func NewAppContainer() (app *AppContainer, err error) {
 	logger.Error("This is an error message")
 	logger.Debug("This is a debug message")
 
+	memberContainer := member.NewMemberContainer(db)
+
 	app = &AppContainer{
-		Config: cfg,
-		DB:     db,
+		Config:          cfg,
+		DB:              db,
+		MemberContainer: memberContainer,
 	}
 
 	return app, nil
