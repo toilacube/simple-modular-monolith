@@ -16,6 +16,19 @@ A simple member/movie CRUD project but in a little bit complex way to demonstrat
 
 - A gateway will sit in front of all modules to route the request to the correct module using Caddy server.
 
+## Run local
+1. Install dependencies:
+   ```bash
+   go mod download
+   ```
+2. Run the database using Docker:
+   ```bash
+   make start-db
+   ```
+3. Run the application:
+   ```bash
+   make run-member
+   ```
 
 ## API
 | Method | Endpoint | Description | Response Type | Response |
