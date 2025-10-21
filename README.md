@@ -13,7 +13,8 @@ A simple member/movie CRUD project but in a little bit complex way to demonstrat
     - Member module
     - Movie module
     - Auth module
-A gateway will sit in front of all modules to route the request to the correct module using Caddy server.
+
+- A gateway will sit in front of all modules to route the request to the correct module using Caddy server.
 
 
 ## API
