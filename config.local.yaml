@@ -1,0 +1,11 @@
+# APP
+MEMBER_SERVER_PORT: 6336
+MOVIE_SERVER_PORT: 8889
+
+# DATABASE
+DB_HOST: localhost
+DB_PORT: 3663
+DB_USER: coolmate
+DB_PASSWORD: coolmate
+DB_NAME: coolmate
+DB_DRIVER: mysql

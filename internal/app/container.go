@@ -20,7 +20,15 @@ func NewAppContainer() (app *AppContainer, err error) {
 		env = "local"
 	}
 
-	cfg, err := config.LoadConfig(env)
+	configType := os.Getenv("CONFIG_TYPE")
+	if configType == "" {
+		configType = "env"
+	}
+
+	cfg, err := config.LoadConfig(config.ConfigOptions{
+		ConfigEnv:  env,
+		ConfigType: configType,
+	})
 
 	if err != nil {
 		return nil, err

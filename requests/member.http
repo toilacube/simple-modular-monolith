@@ -1,5 +1,5 @@
 @host = localhost
-@port = 8888
+@port = 6363
 @baseUrl = http://{{host}}:{{port}}
 @apiUrl = {{baseUrl}}/api/v1
 ### Health check

@@ -17,21 +17,43 @@ type Config struct {
 	DBDriver         string `mapstructure:"DB_DRIVER"`
 }
 
-func LoadConfig(env string) (*Config, error) {
+type ConfigOptions struct {
+	ConfigEnv  string // environment,  for example local, dev, prod
+	ConfigType string // env or  yaml
+}
+
+func LoadConfig(cfgOpts ConfigOptions) (*Config, error) {
 	viper.AddConfigPath(".")
-	viper.SetConfigName(fmt.Sprintf(".env.%s", env))
-	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// fallback to .env.local if file not found
-			viper.SetConfigName(".env.local")
-			if err := viper.ReadInConfig(); err != nil {
+	if cfgOpts.ConfigType == "env" {
+		viper.SetConfigName(fmt.Sprintf(".env.%s", cfgOpts.ConfigEnv))
+		viper.SetConfigType("env")
+		if err := viper.ReadInConfig(); err != nil {
+			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+				// fallback to .env.local if file not found
+				viper.SetConfigName(".env.local")
+				if err := viper.ReadInConfig(); err != nil {
+					return nil, err
+				}
+			} else {
 				return nil, err
 			}
-		} else {
-			return nil, err
+		}
+	}
+	if cfgOpts.ConfigType == "yaml" {
+		viper.SetConfigName(fmt.Sprintf("config.%s", cfgOpts.ConfigEnv))
+		viper.SetConfigType("yaml")
+		if err := viper.ReadInConfig(); err != nil {
+			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+				// fallback to config.local.yaml if file not found
+				viper.SetConfigName("config.local")
+				if err := viper.ReadInConfig(); err != nil {
+					return nil, err
+				}
+			} else {
+				return nil, err
+			}
 		}
 	}
 

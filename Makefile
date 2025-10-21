@@ -1,10 +1,3 @@
-ENV ?= local
-
-ifneq (,$(wildcard ./.env.$(ENV)))
-    include .env.$(ENV)
-else
-    $(warning Environment file .env.$(ENV) not found. Some targets may fail.)
-endif
 
 GORUN := go run
 GOBUILD := go build
@@ -24,6 +17,14 @@ build: format
 	@go build
 
 run-member: format
+	@if [ -z "$(ENV)" ]; then \
+		echo "ENV variable not set. Defaulting to 'local'"; \
+		export ENV=local; \
+	fi
+	@if [ -z "$(CONFIG_TYPE)" ]; then \
+		echo "CONFIG_TYPE variable not set. Defaulting to 'env'"; \
+		export CONFIG_TYPE=env; \
+	fi
 	@go run ./cmd/member_server/main.go
 
 start-db:
