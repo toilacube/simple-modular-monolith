@@ -1,6 +1,6 @@
 ## Go tutorial 
 
-A simple member/movie CRUD project:
+A simple member/movie CRUD project but in a little bit complex way to demonstrate how to build a modular monolith application in Go:
  - Member can register, login, update profile and delete account
  - Movie can be created, read, updated and deleted by member
 
@@ -13,6 +13,8 @@ A simple member/movie CRUD project:
     - Member module
     - Movie module
     - Auth module
+A gateway will sit in front of all modules to route the request to the correct module using Caddy server.
+
 
 ## API
 | Method | Endpoint | Description | Response Type | Response |
