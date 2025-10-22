@@ -1,6 +1,12 @@
 package main
 
 import (
+	"context"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 	"tutorial/internal/app"
 	"tutorial/internal/member"
@@ -64,5 +70,30 @@ func main() {
 
 	addr := ":" + app.Config.Server.MemberPort
 
-	r.Run(addr)
+	srv := &http.Server{
+		Addr:    addr,
+		Handler: r,
+	}
+
+	go func() {
+		log.Println("Starting server on " + addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit // block
+	log.Println("Shutdown member Server ...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Unknow error, forced to shutdown member server:", err)
+	}
+
+	log.Println("Server exiting")
 }

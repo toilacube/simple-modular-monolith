@@ -69,7 +69,7 @@ func LoadConfig(cfgOpts ConfigOptions) (*Config, error) {
 
 	v.BindEnv("jwt.secret_key", "JWT_SECRET_KEY")
 	v.BindEnv("jwt.expiration_minutes", "JWT_EXPIRATION_MINUTES")
-	
+
 	setDefaultConfig(v)
 	v.AddConfigPath(".")
 

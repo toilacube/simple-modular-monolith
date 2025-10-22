@@ -66,6 +66,10 @@ docker-build:
 	@echo "Building API services..."
 	@$(API_COMPOSE) build
 
+docker-db-up:
+	@echo "Starting database..."
+	@$(DB_COMPOSE) up -d
+
 docker-up:
 	@echo "Starting database..."
 	@$(DB_COMPOSE) up -d
