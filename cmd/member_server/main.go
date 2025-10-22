@@ -13,11 +13,19 @@ import (
 	"tutorial/internal/middleware"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "tutorial/docs/member"
 )
 
+// @title           Member Service API
+// @version         1.0
+// @description     This is the API documentation for the Member Service.
+
+// @host http://localhost
+// @BasePath /v1
 func main() {
 	app, err := app.NewAppContainer()
-
 	if err != nil {
 		panic(err)
 	}
@@ -26,6 +34,8 @@ func main() {
 
 	r.Use(gin.Recovery())
 	r.Use(middleware.LoggerMiddleware())
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, "pong")

@@ -10,6 +10,15 @@ func NewMemberHandler(service *Service) *MemberHandler {
 	return &MemberHandler{service: service}
 }
 
+// @Summary Register a new member
+// @Description Add a new member to the database
+// @Accept  json
+// @Produce  json
+// @Param   member  body   RegisterDTO  true  "Register Member"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /member/register [post]
 func (h *MemberHandler) Register(c *gin.Context) {
 	var registerDTO RegisterDTO
 	if err := c.ShouldBindJSON(&registerDTO); err != nil {
@@ -27,6 +36,15 @@ func (h *MemberHandler) Register(c *gin.Context) {
 	})
 }
 
+// @Summary Login a member
+// @Description Authenticate a member and return a JWT token
+// @Accept  json
+// @Produce  json
+// @Param   member  body   LoginDTO  true  "Login Member"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /member/login [post]
 func (h *MemberHandler) Login(c *gin.Context) {
 	var loginDTO LoginDTO
 	if err := c.ShouldBindJSON(&loginDTO); err != nil {

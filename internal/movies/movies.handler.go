@@ -12,6 +12,16 @@ func NewMoviesHandler(service *MoviesService) *MoviesHandler {
 	}
 }
 
+// @Summary Create a new movie
+// @Description Create a new movie associated with the authenticated member
+// @Accept  json
+// @Produce  json
+// @Param   movie  body   CreateMovieDTO  true  "Create Movie"
+// @Success 200 {object} MovieDTO
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Security Bearer token
+// @Router /movies [post]
 func (h *MoviesHandler) CreateMovie(c *gin.Context) {
 	var createMovieDTO CreateMovieDTO
 	if err := c.ShouldBindJSON(&createMovieDTO); err != nil {
@@ -29,6 +39,13 @@ func (h *MoviesHandler) CreateMovie(c *gin.Context) {
 
 }
 
+// @Summary Get all movies by creator
+// @Description Retrieve all movies created by the authenticated member
+// @Produce  json
+// @Success 200 {array} MovieDTO
+// @Failure 500 {object} map[string]string
+// @Security Bearer token
+// @Router /movies [get]
 func (h *MoviesHandler) GetMoviesByCreator(c *gin.Context) {
 	creatorID := c.GetString("member_id")
 	movies, err := h.service.GetMoviesByCreator(creatorID)

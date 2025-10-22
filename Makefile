@@ -70,7 +70,7 @@ docker-db-up:
 	@echo "Starting database..."
 	@$(DB_COMPOSE) up -d
 
-docker-up:
+docker-up: docs
 	@echo "Starting database..."
 	@$(DB_COMPOSE) up -d
 	@echo "Starting API services..."
@@ -93,3 +93,18 @@ docker-logs-caddy:
 
 docker-logs-api:
 	@$(API_COMPOSE) logs -f
+
+docs: docs-clean docs-member docs-movie
+
+docs-clean: 
+	@echo "--- Cleaning Swagger docs ---"
+	@rm -rf docs/member/*
+	@rm -rf docs/movie/*
+
+docs-member:
+	@echo "--- Generating Swagger docs for Member service ---"
+	@swag init --generalInfo main.go --dir ./cmd/member_server,./internal/member --output docs/member
+
+docs-movie:
+	@echo "--- Generating Swagger docs for Movie service ---"
+	@swag init --generalInfo main.go --dir ./cmd/movie_server,./internal/movies --output docs/movie

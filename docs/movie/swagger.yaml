@@ -1,0 +1,94 @@
+basePath: /v1
+definitions:
+  movies.CreateMovieDTO:
+    properties:
+      actor:
+        type: string
+      name:
+        type: string
+      star:
+        maximum: 5
+        minimum: 1
+        type: integer
+    required:
+    - actor
+    - name
+    type: object
+  movies.MovieDTO:
+    properties:
+      actor:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      star:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+host: http://localhost
+info:
+  contact: {}
+  title: Movie Service API
+  version: "1.0"
+paths:
+  /movies:
+    get:
+      description: Retrieve all movies created by the authenticated member
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/movies.MovieDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - Bearer token: []
+      summary: Get all movies by creator
+    post:
+      consumes:
+      - application/json
+      description: Create a new movie associated with the authenticated member
+      parameters:
+      - description: Create Movie
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/movies.CreateMovieDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/movies.MovieDTO'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - Bearer token: []
+      summary: Create a new movie
+swagger: "2.0"

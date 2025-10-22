@@ -11,6 +11,7 @@ COPY internal/ ./internal/
 COPY pkg/ ./pkg/
 COPY migrations/ ./migrations/
 COPY config.*.yaml ./
+COPY docs/ ./docs/
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o movie_server ./cmd/movie_server/main.go
 
@@ -22,11 +23,9 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 COPY --from=builder /app/movie_server .
-
 COPY --from=builder /app/config.*.yaml ./
-
 COPY --from=builder /app/migrations ./migrations
+COPY --from=builder /app/docs/movie ./docs
 
 EXPOSE 8889
-
 CMD ["./movie_server"]

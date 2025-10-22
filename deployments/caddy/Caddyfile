@@ -12,6 +12,14 @@ api.toilacube.aioz {
         rewrite * /api{path}
         reverse_proxy movie-server:8889
     }
+    route /member/swagger* {
+        uri strip_prefix /member
+        reverse_proxy member-server:6363
+    }
+    route /movie/swagger* {
+        uri strip_prefix /movie
+        reverse_proxy movie-server:8889
+    }
 }
 
 http://localhost {
@@ -25,6 +33,14 @@ http://localhost {
     }
     route /v1/movie* {
         rewrite * /api{path}
+        reverse_proxy movie-server:8889
+    }
+    route /member/swagger* {
+        uri strip_prefix /member
+        reverse_proxy member-server:6363
+    }
+    route /movie/swagger* {
+        uri strip_prefix /movie
         reverse_proxy movie-server:8889
     }
 }

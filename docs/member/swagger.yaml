@@ -1,0 +1,98 @@
+basePath: /v1
+definitions:
+  member.LoginDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  member.RegisterDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: http://localhost
+info:
+  contact: {}
+  description: This is the API documentation for the Member Service.
+  title: Member Service API
+  version: "1.0"
+paths:
+  /member/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a member and return a JWT token
+      parameters:
+      - description: Login Member
+        in: body
+        name: member
+        required: true
+        schema:
+          $ref: '#/definitions/member.LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login a member
+  /member/register:
+    post:
+      consumes:
+      - application/json
+      description: Add a new member to the database
+      parameters:
+      - description: Register Member
+        in: body
+        name: member
+        required: true
+        schema:
+          $ref: '#/definitions/member.RegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new member
+swagger: "2.0"
