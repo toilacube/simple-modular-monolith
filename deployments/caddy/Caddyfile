@@ -1,0 +1,30 @@
+
+api.toilacube.aioz {
+    route /v1/member* {
+        rewrite * /api{path}
+        reverse_proxy member-server:6363
+    }
+    route /v1/logger* {
+        rewrite * /api{path}
+        reverse_proxy member-server:6363
+    }
+    route /v1/movie* {
+        rewrite * /api{path}
+        reverse_proxy movie-server:8889
+    }
+}
+
+http://localhost {
+    route /v1/member* {
+        rewrite * /api{path}
+        reverse_proxy member-server:6363
+    }
+    route /v1/logger* {
+        rewrite * /api{path}
+        reverse_proxy member-server:6363
+    }
+    route /v1/movie* {
+        rewrite * /api{path}
+        reverse_proxy movie-server:8889
+    }
+}

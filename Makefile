@@ -60,6 +60,7 @@ migrate-up:
 
 DB_COMPOSE := docker compose -f deployments/database/docker-compose.yml
 API_COMPOSE := docker compose -f deployments/api/docker-compose.yml
+CADDY_COMPOSE := docker compose -f deployments/caddy/docker-compose.yml
 
 docker-build:
 	@echo "Building API services..."
@@ -70,8 +71,11 @@ docker-up:
 	@$(DB_COMPOSE) up -d
 	@echo "Starting API services..."
 	@$(API_COMPOSE) up -d --build
+	@echo "Starting Caddy reverse proxy..."
+	@$(CADDY_COMPOSE) up -d
 
 docker-down:
+	@$(CADDY_COMPOSE) down
 	@echo "Stopping API services..."
 	@$(API_COMPOSE) down
 	@echo "Stopping database..."
@@ -79,3 +83,9 @@ docker-down:
 
 docker-clean: docker-down
 	@docker volume rm coolmate-db_db-data || true
+
+docker-logs-caddy:
+	@$(CADDY_COMPOSE) logs -f
+
+docker-logs-api:
+	@$(API_COMPOSE) logs -f

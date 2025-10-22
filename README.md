@@ -29,7 +29,32 @@ A simple member/movie CRUD project but in a little bit complex way to demonstrat
    ```bash
    make run-member
    ```
+## Run with Docker
 
+```bash
+make docker-up
+```
+- Test the server:
+```bash
+curl -X POST \
+  http://localhost/v1/member/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "localuser",
+    "password": "password123"
+  }'
+```
+
+```bash
+curl -X POST \
+  http://localhost/v1/member/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "localuser",
+    "password": "password123"
+  }'
+```
+   
 ## API
 | Method | Endpoint | Description | Response Type | Response |
 | :--- | :--- | :--- | :--- | :--- |
