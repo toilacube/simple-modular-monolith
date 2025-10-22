@@ -57,3 +57,25 @@ migrate-up:
 	@echo "Applying migrations for ENV='$(ENV)'..."
 	@echo "Using DB: mysql://$(DB_USER):******@tcp($(DB_HOST):$(DB_PORT))/$(DB_NAME)"
 	@migrate -database "$(DB_SOURCE)" -path migrations up
+
+DB_COMPOSE := docker compose -f deployments/database/docker-compose.yml
+API_COMPOSE := docker compose -f deployments/api/docker-compose.yml
+
+docker-build:
+	@echo "Building API services..."
+	@$(API_COMPOSE) build
+
+docker-up:
+	@echo "Starting database..."
+	@$(DB_COMPOSE) up -d
+	@echo "Starting API services..."
+	@$(API_COMPOSE) up -d --build
+
+docker-down:
+	@echo "Stopping API services..."
+	@$(API_COMPOSE) down
+	@echo "Stopping database..."
+	@$(DB_COMPOSE) down
+
+docker-clean: docker-down
+	@docker volume rm coolmate-db_db-data || true

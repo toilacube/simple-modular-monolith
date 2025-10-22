@@ -1,0 +1,31 @@
+services:
+  member-server:
+    build:
+      context: ../../
+      dockerfile: ./deployments/api/member/Dockerfile
+    container_name: coolmate-member-server
+    ports:
+      - "${SERVER_MEMBER_PORT}:${SERVER_MEMBER_PORT}" 
+    env_file:
+      - .env
+    networks:
+      - coolmate-network
+    restart: unless-stopped
+
+  movie-server:
+    build:
+      context: ../../
+      dockerfile: ./deployments/api/movie/Dockerfile
+    container_name: coolmate-movie-server
+    ports:
+      - "${SERVER_MOVIE_PORT}:${SERVER_MOVIE_PORT}" 
+    env_file:
+      - .env 
+    networks:
+      - coolmate-network
+    restart: unless-stopped
+
+networks:
+  coolmate-network:
+    external: true
+    name: coolmate-shared-network

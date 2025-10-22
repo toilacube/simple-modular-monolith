@@ -3,8 +3,8 @@ server:
   movie_port: "8889"
 
 database:
-  host: localhost
-  port: "3663"
+  host: mysql-db
+  port: "3306"
   user: coolmate
   password: coolmate
   name: coolmate
