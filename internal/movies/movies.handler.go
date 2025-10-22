@@ -20,7 +20,7 @@ func NewMoviesHandler(service *MoviesService) *MoviesHandler {
 // @Success 200 {object} MovieDTO
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Security Bearer token
+// @Security BearerAuth  
 // @Router /movies [post]
 func (h *MoviesHandler) CreateMovie(c *gin.Context) {
 	var createMovieDTO CreateMovieDTO
@@ -44,7 +44,7 @@ func (h *MoviesHandler) CreateMovie(c *gin.Context) {
 // @Produce  json
 // @Success 200 {array} MovieDTO
 // @Failure 500 {object} map[string]string
-// @Security Bearer token
+// @Security BearerAuth  
 // @Router /movies [get]
 func (h *MoviesHandler) GetMoviesByCreator(c *gin.Context) {
 	creatorID := c.GetString("member_id")

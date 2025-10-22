@@ -31,7 +31,7 @@ definitions:
       updated_at:
         type: string
     type: object
-host: http://localhost
+host: localhost
 info:
   contact: {}
   title: Movie Service API
@@ -56,7 +56,7 @@ paths:
               type: string
             type: object
       security:
-      - Bearer token: []
+      - BearerAuth: []
       summary: Get all movies by creator
     post:
       consumes:
@@ -89,6 +89,12 @@ paths:
               type: string
             type: object
       security:
-      - Bearer token: []
+      - BearerAuth: []
       summary: Create a new movie
+securityDefinitions:
+  BearerAuth:
+    description: 'Format: "Bearer {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

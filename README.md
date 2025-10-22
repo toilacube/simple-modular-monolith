@@ -54,6 +54,10 @@ curl -X POST \
     "password": "password123"
   }'
 ```
+
+## Swagger
+- Member service: http://localhost/member/swagger/index.html#/
+- Movie service: http://localhost/movie/swagger/index.html#/
    
 ## API
 | Method | Endpoint | Description | Response Type | Response |

@@ -5,14 +5,14 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "http://localhost",
+    "host": "localhost",
     "basePath": "/v1",
     "paths": {
         "/movies": {
             "get": {
                 "security": [
                     {
-                        "Bearer token": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Retrieve all movies created by the authenticated member",
@@ -44,7 +44,7 @@
             "post": {
                 "security": [
                     {
-                        "Bearer token": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Create a new movie associated with the authenticated member",
@@ -141,6 +141,14 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Format: \"Bearer {token}\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

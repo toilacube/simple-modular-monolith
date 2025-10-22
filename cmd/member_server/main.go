@@ -22,7 +22,7 @@ import (
 // @version         1.0
 // @description     This is the API documentation for the Member Service.
 
-// @host http://localhost
+// @host localhost
 // @BasePath /v1
 func main() {
 	app, err := app.NewAppContainer()

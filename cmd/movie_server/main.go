@@ -21,8 +21,13 @@ import (
 // @title           Movie Service API
 // @version         1.0
 
-// @host http://localhost
+// @host localhost
 // @BasePath /v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Format: "Bearer {token}"
 func main() {
 	app, err := app.NewAppContainer()
 	if err != nil {

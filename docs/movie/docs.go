@@ -19,7 +19,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "Bearer token": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Retrieve all movies created by the authenticated member",
@@ -51,7 +51,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "Bearer token": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Create a new movie associated with the authenticated member",
@@ -149,13 +149,21 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Format: \"Bearer {token}\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "http://localhost",
+	Host:             "localhost",
 	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Movie Service API",
